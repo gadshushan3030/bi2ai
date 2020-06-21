@@ -1,5 +1,13 @@
 from os import getenv
 
+'''
+    Package name: Environment
+    Package name space: core
+    Package description: Cross platform environment manager
+    Package version: 1.0.0
+    Package author: Israel Vainberg
+'''
+
 
 class Environment:
     _bi2ai_env = None

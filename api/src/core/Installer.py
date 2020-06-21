@@ -3,6 +3,15 @@ import sys
 import importlib
 
 
+'''
+    Package name: Install
+    Package name space: core
+    Package description: Python package installer (using pip)
+    Package version: 1.0.0
+    Package author: Israel Vainberg
+'''
+
+
 class Install:
 
     def __init__(self):

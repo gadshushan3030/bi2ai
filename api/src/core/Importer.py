@@ -1,6 +1,14 @@
 import os
 import importlib
 
+'''
+    Package name: Import
+    Package name space: core
+    Package description: Dynamic module loader (bound to a name space)
+    Package version: 1.0.0
+    Package author: Israel Vainberg
+'''
+
 
 class Import:
     _namespace = 'com.biai'
