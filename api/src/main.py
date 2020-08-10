@@ -1,8 +1,12 @@
+from flask import Flask
+
+app = Flask(__name__)
 
 
-def hello():
-    print('hello world????')
+@app.route('/')
+def index():
+    return 'BI2AI API'
 
 
 if __name__ == "__main__":
-    hello()
+    app.run()
