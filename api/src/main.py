@@ -1,9 +1,15 @@
 import logging
-from flask import Flask, jsonify
-from flask import request as flask_request
-from api.src.core.validations import is_valid_payload
-from api.src.core.exceptions import *
+
+from flask import Flask
+from flask import request as flask_request, jsonify, make_response
+
 from api.src.core import config
+from api.src.core.exceptions import *
+from api.src.core.validations import is_valid_payload
+
+from api.src.modules import users_module
+from api.src.modules.tokens_module import create_token
+from api.src.modules.users_module import set_token
 
 app = Flask(__name__)
 
@@ -23,15 +29,32 @@ def login():
             logging.error(f"api.hosts.add_host: Validation errors were found {validation_errors}")
             raise ValidationError(validation_errors)
         # Check the payload
-        if payload.get('username') == 'kiril' or payload.get('username') == 'gad':
-            return f"Welcome {payload.get('username')}"
-        else:
-            return 'Wrong!'
+        user = users_module.get_by_username(payload.get('username'))
+        if user is None:
+            raise NotFoundError(f"The username {payload.get('username')} was not found")
+        print(user.get('user_id'))
+
+        auth = flask_request.authorization
+        if auth and auth.password == 'password':
+            token = create_token(user.get('user_id'))
+            return jsonify({'token': token.decode('UTF-8')}), set_token(token, user.get('user_id'))
+        return make_response('Could not verify!', 401, {'WWW-authenticate': 'Basic realm = " Login requires "'})
+
     except ValidationError as errors:
         return jsonify({
             "status": False,
             "errors": dict(errors.args[0])
         }), config.API_STATUS_BAD_REQUEST
+    except NotFoundError as error:
+        return jsonify({
+            "status": False,
+            "errors": str(error)
+        }), config.API_STATUS_NOT_FOUND
+    except AuthorizationError as error:
+        return jsonify({
+            "status": False,
+            "errors": str(error)
+        }), config.API_STATUS_UNAUTHORIZED
 
 
 if __name__ == "__main__":
