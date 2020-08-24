@@ -1,23 +1,13 @@
-import jwt
-import datetime
-from api.src.core.exceptions import AuthorizationError
+from flask_jwt_extended import create_access_token, create_refresh_token
 
-
-BI2AI_JWT_SECRET = 'blabla123'
-BI2AI_JWT_EXPIRE_MINUTES = 7200
+BI2AI_JWT_BLACKLIST_ENABLED = True
 
 
 def create_token(user_id):
-    token = jwt.encode({
-        'user_id': user_id,
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=BI2AI_JWT_EXPIRE_MINUTES)
-    }, BI2AI_JWT_SECRET)
-    return token
+    access_token = create_access_token(identity=user_id)
+    refresh_token= create_refresh_token(identity=user_id)
+    return access_token, refresh_token
 
 
-def parse_token(jwt_token):
-    try:
-        payload = jwt.decode(jwt_token)
-        return payload.get('user_id')
-    except jwt.ExpiredSignatureError:
-        raise AuthorizationError("Access token is expired")
+
+
