@@ -13,7 +13,7 @@ from api.src.modules.tokens_module import create_token
 from flask_jwt_extended import (
     JWTManager, jwt_required, get_jwt_identity,
     create_access_token,jwt_refresh_token_required, get_raw_jwt)
-from api.src.modules.users_module import get_by_username, set_token
+from api.src.modules.users_module import get_by_username
 
 app = Flask(__name__)
 
